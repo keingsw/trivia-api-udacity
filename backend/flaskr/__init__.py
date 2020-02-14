@@ -38,6 +38,9 @@ def create_app(test_config=None):
         questions = Question.query.all()
         paginated_questions = get_paginated_questions(request, questions)
 
+        categories = Category.query.all()
+        formatted_categories = {}
+
         if len(paginated_questions) < 1:
             return abort(404)
 
@@ -45,6 +48,8 @@ def create_app(test_config=None):
             "success": True,
             "questions": paginated_questions,
             "total_num": len(paginated_questions)
+            "categories": [category.format() for category in categories],
+            "current_category": None
         })
 
     '''

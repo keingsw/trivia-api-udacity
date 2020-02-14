@@ -48,6 +48,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['questions']), QUESTIONS_PER_PAGE)
         self.assertTrue(data['total_num'])
+        self.assertTrue(data['categories'])
+        self.assertIsNone(data['current_category'])
 
     def test_get_questions_page_not_exist_beyond_valid_page(self):
         response = self.client().get('/questions?page=10000')
