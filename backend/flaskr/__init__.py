@@ -6,6 +6,7 @@ import random
 
 from models import setup_db, Question, Category
 from helpers import get_paginated_questions
+from constants import MESSAGE_NOT_FOUND, MESSAGE_UNPROCESSABLE
 
 
 def create_app(test_config=None):
@@ -51,36 +52,39 @@ def create_app(test_config=None):
             "current_category": None
         })
 
-    '''
-  @TODO: 
-  Create an endpoint to handle GET requests for questions, 
-  including pagination (every 10 questions). 
-  This endpoint should return a list of questions, 
-  number of total questions, current category, categories. 
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_question(question_id):
+        question = Question.query.filter(
+            Question.id == question_id).one_or_none()
+        if question == None:
+            return abort(404)
 
-  TEST: At this point, when you start the application
-  you should see questions and categories generated,
-  ten questions per page and pagination at the bottom of the screen for three pages.
-  Clicking on the page numbers should update the questions. 
-  '''
-    '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
+        question.delete()
+        return jsonify({
+            "success": True,
+            "deleted": question_id
+        })
 
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page. 
-  '''
+    @app.route('/questions', methods=['POST'])
+    def create_question():
+        body = request.get_json()
 
-    '''
-  @TODO: 
-  Create an endpoint to POST a new question, 
-  which will require the question and answer text, 
-  category, and difficulty score.
+        for key in ['question', 'answer', 'difficulty', 'category']:
+            if key not in body.keys() or body[key] == None or body[key] == '':
+                return abort(422)
 
-  TEST: When you submit a question on the "Add" tab, 
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.  
-  '''
+        question = Question(
+            question=body['question'],
+            answer=body['answer'],
+            difficulty=body['difficulty'],
+            category=body['category'],
+        )
+        question.insert()
+
+        return jsonify({
+            "success": True,
+            "created": question.format()
+        })
 
     '''
   @TODO: 
@@ -114,17 +118,12 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
 
-    '''
-  @TODO: 
-  Create error handlers for all expected errors 
-  including 404 and 422. 
-  '''
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
             "success": False,
             "error": 404,
-            "message": "resource not found."
+            "message": MESSAGE_NOT_FOUND
         }), 404
 
     @app.errorhandler(422)
@@ -132,7 +131,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": False,
             "error": 422,
-            "message": "unprocessable."
+            "message": MESSAGE_UNPROCESSABLE
         }), 422
 
     return app
