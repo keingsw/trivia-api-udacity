@@ -38,7 +38,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['categories']))
-        self.assertTrue(data['total_num'])
+        self.assertTrue(data['total_categories'])
 
     def test_get_questions_success(self):
         response = self.client().get('/questions')
@@ -47,7 +47,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['questions']), QUESTIONS_PER_PAGE)
-        self.assertTrue(data['total_num'])
+        self.assertTrue(data['total_questions'])
         self.assertTrue(data['categories'])
         self.assertIsNone(data['current_category'])
 

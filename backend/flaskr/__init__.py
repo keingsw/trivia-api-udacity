@@ -30,7 +30,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": True,
             "categories": formatted_categories,
-            "total_num": len(formatted_categories)
+            "total_categories": len(formatted_categories)
         })
 
     @app.route('/questions', methods=['GET'])
@@ -39,7 +39,6 @@ def create_app(test_config=None):
         paginated_questions = get_paginated_questions(request, questions)
 
         categories = Category.query.all()
-        formatted_categories = {}
 
         if len(paginated_questions) < 1:
             return abort(404)
@@ -47,7 +46,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": True,
             "questions": paginated_questions,
-            "total_num": len(paginated_questions)
+            "total_questions": len(paginated_questions),
             "categories": [category.format() for category in categories],
             "current_category": None
         })
