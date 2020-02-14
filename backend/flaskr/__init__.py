@@ -5,8 +5,7 @@ from flask_cors import CORS
 import random
 
 from models import setup_db, Question, Category
-
-QUESTIONS_PER_PAGE = 10
+from helpers import get_paginated_questions
 
 
 def create_app(test_config=None):
@@ -24,12 +23,7 @@ def create_app(test_config=None):
                              'GET, PATCH, POST, DELETE, OPTIONS')
         return response
 
-    '''
-    @TODO:
-    Create an endpoint to handle GET requests
-    for all available categories.
-    '''
-    @app.route('/categories')
+    @app.route('/categories', methods=['GET'])
     def get_categories():
         categories = Category.query.all()
         formatted_categories = [category.format() for category in categories]
@@ -37,6 +31,20 @@ def create_app(test_config=None):
             "success": True,
             "categories": formatted_categories,
             "total_num": len(formatted_categories)
+        })
+
+    @app.route('/questions', methods=['GET'])
+    def get_questions():
+        questions = Question.query.all()
+        paginated_questions = get_paginated_questions(request, questions)
+
+        if len(paginated_questions) < 1:
+            return abort(404)
+
+        return jsonify({
+            "success": True,
+            "questions": paginated_questions,
+            "total_num": len(paginated_questions)
         })
 
     '''
@@ -51,7 +59,6 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
-
     '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
@@ -108,5 +115,20 @@ def create_app(test_config=None):
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "resource not found."
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "unprocessable."
+        }), 422
 
     return app

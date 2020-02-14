@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
 from models import setup_db, Question, Category
+from constants import QUESTIONS_PER_PAGE
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -38,6 +39,40 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['categories']))
         self.assertTrue(data['total_num'])
+
+    def test_get_questions_success(self):
+        response = self.client().get('/questions')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['questions']), QUESTIONS_PER_PAGE)
+        self.assertTrue(data['total_num'])
+
+    def test_get_questions_page_not_exist_beyond_valid_page(self):
+        response = self.client().get('/questions?page=10000')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found.')
+
+    def test_get_questions_page_not_exist_page_0(self):
+        response = self.client().get('/questions?page=0')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable.')
+
+    def test_get_questions_page_not_exist_page_below_zero(self):
+        response = self.client().get('/questions?page=-1')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable.')
+
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
