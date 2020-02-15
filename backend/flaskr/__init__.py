@@ -82,8 +82,8 @@ def create_app(test_config=None):
     def create_question():
         body = request.get_json()
 
-        if 'searchTerm' in body.keys():
-            return search_questions(request, body['searchTerm'])
+        if 'search_term' in body.keys():
+            return search_questions(request, body['search_term'])
 
         for key in ['question', 'answer', 'difficulty', 'category']:
             if key not in body.keys() or body[key] == None or body[key] == '':
