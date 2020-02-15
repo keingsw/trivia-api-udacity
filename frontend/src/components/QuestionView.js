@@ -9,6 +9,8 @@ class QuestionView extends Component {
   constructor() {
     super();
     this.state = {
+      view: 'list',
+      searchTerm: null,
       questions: [],
       page: 1,
       totalQuestions: 0,
@@ -27,6 +29,7 @@ class QuestionView extends Component {
       type: 'GET',
       success: result => {
         this.setState({
+          view: 'list',
           questions: result.questions,
           totalQuestions: result.total_questions,
           categories: result.categories,
@@ -42,7 +45,11 @@ class QuestionView extends Component {
   };
 
   selectPage(num) {
-    this.setState({ page: num }, () => this.getQuestions());
+    if (this.state.view === 'search') {
+      this.setState({ page: num }, () => this.search());
+    } else {
+      this.setState({ page: num }, () => this.getQuestions());
+    }
   }
 
   createPagination() {
@@ -83,9 +90,11 @@ class QuestionView extends Component {
     });
   };
 
-  submitSearch = searchTerm => {
+  search = () => {
+    const { page, searchTerm } = this.state;
+
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/questions?page=${page}`,
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -107,6 +116,16 @@ class QuestionView extends Component {
         return;
       },
     });
+  };
+  submitSearch = searchTerm => {
+    this.setState(
+      {
+        view: 'search',
+        page: 1,
+        searchTerm: searchTerm,
+      },
+      () => this.search()
+    );
   };
 
   questionAction = id => action => {
