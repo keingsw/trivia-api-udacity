@@ -113,7 +113,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 
 - Returns a list of questions in the given category, ID of the category, success value, and total number of questions
 - Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
-- 404 Error is thrown when there is not question on the given page.
+- Error of status code 404 is thrown when there is not question on the given page.
 
 ### Sample
 
@@ -154,7 +154,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 
 - Returns a list of questions, success value, total number of questions, a list of categories, ID of current category (should be `null`), and success value
 - Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
-- 404 Error is thrown when there is not question on the given page.
+- Error of status code 404 is thrown when there is not question on the given page.
 
 ### Sample
 
@@ -288,7 +288,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 ```
 
 - If `search_term` is included in request body, the result of search for questions based on the given search term is returned, which returns a list of matched questions, success value, total number of result, and current category as `null`
-- 404 Error is thrown when there is not question on the given page.
+- Error of status code 404 is thrown when there is not question on the given page.
 
 `curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"search_term":"title"}'` 
 

@@ -40,6 +40,9 @@ def create_app(test_config=None):
             Question.category == category_id).all()
         paginated_questions = get_paginated_questions(request, questions)
 
+        if len(paginated_questions) < 1:
+            return abort(404)
+
         return jsonify({
             "success": True,
             "questions": paginated_questions,
@@ -107,6 +110,9 @@ def create_app(test_config=None):
             Question.question.ilike('%'+search_term+'%')
         ).all()
         paginated_questions = get_paginated_questions(request, questions)
+
+        if len(questions) > 0 and len(paginated_questions) < 1:
+            return abort(404)
 
         return jsonify({
             "success": True,
