@@ -6,7 +6,7 @@ import random
 
 from models import setup_db, Question, Category
 from helpers import get_paginated_questions
-from constants import MESSAGE_NOT_FOUND, MESSAGE_UNPROCESSABLE
+from constants import MESSAGE_NOT_FOUND, MESSAGE_UNPROCESSABLE, MESSAGE_SERVER_ERROR
 
 
 def create_app(test_config=None):
@@ -149,5 +149,13 @@ def create_app(test_config=None):
             "error": 422,
             "message": MESSAGE_UNPROCESSABLE
         }), 422
+
+    @app.errorhandler(500)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "message": MESSAGE_SERVER_ERROR
+        }), 500
 
     return app
