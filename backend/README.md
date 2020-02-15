@@ -66,30 +66,290 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-REVIEW_COMMENT
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
+# Endpoints
 
-Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
+## GET /categories
 
-GET '/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
+- Returns a list of all categories, success value, and total number of categories.
+
+### Sample
+
+`curl -X GET http://127.0.0.1:5000/categories`
 
 ```
+{
+  "categories": [
+    {
+      "id": 1, 
+      "type": "Science"
+    }, 
+    {
+      "id": 2, 
+      "type": "Art"
+    }, 
+    {
+      "id": 3, 
+      "type": "Geography"
+    }, 
+    {
+      "id": 4, 
+      "type": "History"
+    }, 
+    {
+      "id": 5, 
+      "type": "Entertainment"
+    }, 
+    {
+      "id": 6, 
+      "type": "Sports"
+    }
+  ], 
+  "success": true, 
+  "total_categories": 6
+}
+```
 
+## GET /categories/<int:category_id>/questions
 
+- Returns a list of questions in the given category, ID of the category, success value, and total number of questions
+- Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
+- 404 Error is thrown when there is not question on the given page.
+
+### Sample
+
+`curl -X GET http://127.0.0.1:5000/categories/1/questions?page=1`
+
+```
+{
+  "current_category": 1, 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "Alexander Fleming", 
+      "category": 1, 
+      "difficulty": 3, 
+      "id": 21, 
+      "question": "Who discovered penicillin?"
+    }, 
+    {
+      "answer": "Blood", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 22, 
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 3
+}
+```
+
+## GET /questions
+
+- Returns a list of questions, success value, total number of questions, a list of categories, ID of current category (should be `null`), and success value
+- Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
+- 404 Error is thrown when there is not question on the given page.
+
+### Sample
+
+`curl -X GET http://127.0.0.1:5000/questions?page=1`
+
+```
+{
+  "categories": [
+    {
+      "id": 1, 
+      "type": "Science"
+    }, 
+    {
+      "id": 2, 
+      "type": "Art"
+    }, 
+    {
+      "id": 3, 
+      "type": "Geography"
+    }, 
+    {
+      "id": 4, 
+      "type": "History"
+    }, 
+    {
+      "id": 5, 
+      "type": "Entertainment"
+    }, 
+    {
+      "id": 6, 
+      "type": "Sports"
+    }
+  ], 
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Muhammad Ali", 
+      "category": 4, 
+      "difficulty": 1, 
+      "id": 9, 
+      "question": "What boxer's original name is Cassius Clay?"
+    }, 
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }, 
+    {
+      "answer": "Brazil", 
+      "category": 6, 
+      "difficulty": 3, 
+      "id": 10, 
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    }, 
+    {
+      "answer": "Uruguay", 
+      "category": 6, 
+      "difficulty": 4, 
+      "id": 11, 
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    }, 
+    {
+      "answer": "George Washington Carver", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 12, 
+      "question": "Who invented Peanut Butter?"
+    }, 
+    {
+      "answer": "Lake Victoria", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 13, 
+      "question": "What is the largest lake in Africa?"
+    }, 
+    {
+      "answer": "The Palace of Versailles", 
+      "category": 3, 
+      "difficulty": 3, 
+      "id": 14, 
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 19
+}
+```
+
+## POST /questions
+
+- Creates a new question using the submitted question, answer, difficulty and category. All the parameters are required. Returns the created question and success value.
+
+### Sample
+
+`curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"question":"Which planet has a moon named Phobos?","answer":"Mars","difficulty":3,"category":1}'` 
+
+```
+{
+  "created": {
+    "answer": "Mars", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 25, 
+    "question": "Which planet has a moon named Phobos?"
+  }, 
+  "success": true
+}
+```
+
+- If `search_term` is included in request body, the result of search for questions based on the given search term is returned, which returns a list of matched questions, success value, total number of result, and current category as `null`
+- 404 Error is thrown when there is not question on the given page.
+
+`curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"search_term":"title"}'` 
+
+```
+{
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 2
+}
+```
+
+## DELETE /questions/<int:question_id>
+
+- Deletes the question of the given ID if it exists. Returns the id of the deleted question and success value
+- If the question of the given ID does not exist, error of status code 404 is returned.
+
+`curl -X DELETE http://127.0.0.1:5000/questions/25` 
+
+```
+{
+  "deleted": 25, 
+  "success": true
+}
+```
+
+## POST /quizzes
+
+- Returns one of the randomly chosen questions in the given category and success value.
+- If `previous_questions` is provided in request body, they are excluded from selecting process. 
+- `question` is returned as `null` if there is no more questions which has not previously played in the category. 
+
+`curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json" -d '{"quiz_category":{"type":"Science","id":1},"previous_questions":[20]}'` 
+
+```
+{
+  "question": {
+    "answer": "Alexander Fleming", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 21, 
+    "question": "Who discovered penicillin?"
+  }, 
+  "success": true
+}
+```
 ## Testing
 To run the tests, run
 ```
