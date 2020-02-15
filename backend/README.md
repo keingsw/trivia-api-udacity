@@ -109,7 +109,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-### GET /categories/<int:category_id>/questions
+### GET /categories/`category_id`/questions
 
 - Returns a list of questions in the given category, ID of the category, success value, and total number of questions
 - Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
@@ -318,7 +318,7 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-### DELETE /questions/<int:question_id>
+### DELETE /questions/`question_id`
 
 - Deletes the question of the given ID if it exists. Returns the id of the deleted question and success value
 - If the question of the given ID does not exist, error of status code 404 is returned.
