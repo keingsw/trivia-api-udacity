@@ -71,9 +71,11 @@ class QuestionView extends Component {
     return pageNumbers;
   }
 
-  getByCategory = id => {
+  getByCategory = () => {
+    const { page, currentCategory } = this.state;
+
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/categories/${currentCategory}/questions?page=${page}`,
       type: 'GET',
       success: result => {
         this.setState({
@@ -88,6 +90,17 @@ class QuestionView extends Component {
         return;
       },
     });
+  };
+
+  handleCategoryClick = categoryId => {
+    this.setState(
+      {
+        view: 'in_category',
+        page: 1,
+        currentCategory: categoryId,
+      },
+      () => this.getByCategory()
+    );
   };
 
   search = () => {
@@ -162,7 +175,7 @@ class QuestionView extends Component {
               <li
                 key={category.id}
                 onClick={() => {
-                  this.getByCategory(category.id);
+                  this.handleCategoryClick(category.id);
                 }}
               >
                 {category.type}
