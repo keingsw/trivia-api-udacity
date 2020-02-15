@@ -127,7 +127,7 @@ def create_app(test_config=None):
             previous_questions = body['previous_questions']
 
         question = Question.query.filter(
-            Question.category == body['quiz_category'], Question.id.notin_(previous_questions)).first()
+            Question.category == body['quiz_category']['id'], Question.id.notin_(previous_questions)).first()
 
         return jsonify({
             "success": True,
