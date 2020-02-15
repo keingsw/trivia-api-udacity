@@ -66,13 +66,13 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-# Endpoints
+## Endpoints
 
-## GET /categories
+### GET /categories
 
 - Returns a list of all categories, success value, and total number of categories.
 
-### Sample
+#### Sample
 
 `curl -X GET http://127.0.0.1:5000/categories`
 
@@ -109,13 +109,13 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-## GET /categories/<int:category_id>/questions
+### GET /categories/<int:category_id>/questions
 
 - Returns a list of questions in the given category, ID of the category, success value, and total number of questions
 - Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
 - Error of status code 404 is thrown when there is not question on the given page.
 
-### Sample
+#### Sample
 
 `curl -X GET http://127.0.0.1:5000/categories/1/questions?page=1`
 
@@ -150,13 +150,13 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-## GET /questions
+### GET /questions
 
 - Returns a list of questions, success value, total number of questions, a list of categories, ID of current category (should be `null`), and success value
 - Results are paginated in group of 10. Include a request argument to choose page number, starting from 1.
 - Error of status code 404 is thrown when there is not question on the given page.
 
-### Sample
+#### Sample
 
 `curl -X GET http://127.0.0.1:5000/questions?page=1`
 
@@ -266,11 +266,11 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-## POST /questions
+### POST /questions
 
 - Creates a new question using the submitted question, answer, difficulty and category. All the parameters are required. Returns the created question and success value.
 
-### Sample
+#### Sample
 
 `curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"question":"Which planet has a moon named Phobos?","answer":"Mars","difficulty":3,"category":1}'` 
 
@@ -289,6 +289,8 @@ One note before you delve into your tasks: for each endpoint you are expected to
 
 - If `search_term` is included in request body, the result of search for questions based on the given search term is returned, which returns a list of matched questions, success value, total number of result, and current category as `null`
 - Error of status code 404 is thrown when there is not question on the given page.
+
+#### Sample
 
 `curl -X POST http://127.0.0.1:5000/questions -H "Content-Type: application/json" -d '{"search_term":"title"}'` 
 
@@ -316,10 +318,12 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-## DELETE /questions/<int:question_id>
+### DELETE /questions/<int:question_id>
 
 - Deletes the question of the given ID if it exists. Returns the id of the deleted question and success value
 - If the question of the given ID does not exist, error of status code 404 is returned.
+
+#### Sample
 
 `curl -X DELETE http://127.0.0.1:5000/questions/25` 
 
@@ -330,11 +334,13 @@ One note before you delve into your tasks: for each endpoint you are expected to
 }
 ```
 
-## POST /quizzes
+### POST /quizzes
 
 - Returns one of the randomly chosen questions in the given category and success value.
 - If `previous_questions` is provided in request body, they are excluded from selecting process. 
 - `question` is returned as `null` if there is no more questions which has not previously played in the category. 
+
+#### Sample
 
 `curl -X POST http://127.0.0.1:5000/quizzes -H "Content-Type: application/json" -d '{"quiz_category":{"type":"Science","id":1},"previous_questions":[20]}'` 
 
