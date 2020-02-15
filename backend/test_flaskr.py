@@ -207,7 +207,7 @@ class TriviaTestCase(unittest.TestCase):
     # Search Questions
     def test_search_questions_success(self):
         response = self.client().post(
-            '/questions', json={"searchTerm": 'title'})
+            '/questions', json={"search_term": 'title'})
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
@@ -218,7 +218,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_search_questions_success_no_results(self):
         response = self.client().post(
-            '/questions', json={"searchTerm": 'QQQQQQQQ'})
+            '/questions', json={"search_term": 'QQQQQQQQ'})
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
