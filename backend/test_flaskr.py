@@ -257,9 +257,59 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['message'], MESSAGE_NOT_FOUND)
 
     """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
+      Endpoint: POST /quizzes
     """
+
+    def test_get_guesses_success(self):
+        category = 1
+        response = self.client().post(
+            '/quizzes', json={"quiz_category": category})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+
+    def test_get_guesses_success_with_previous_questions(self):
+        category = 1
+        questions_in_category = Question.query.filter(
+            Question.category == category).all()
+
+        expected_question = questions_in_category[0]
+        previous_questions = [
+            question.id for question in questions_in_category[1:]]
+
+        response = self.client().post(
+            '/quizzes', json={"quiz_category": category, "previous_questions": previous_questions})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['question']['id'], expected_question.id)
+
+    def test_get_guesses_success_no_more_question(self):
+        category = 1
+        questions_in_category = Question.query.filter(
+            Question.category == category).all()
+
+        previous_questions = [
+            question.id for question in questions_in_category]
+
+        response = self.client().post(
+            '/quizzes', json={"quiz_category": category, "previous_questions": previous_questions})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertIsNone(data['question'])
+
+    def test_get_guesses_error_no_category_specified(self):
+        response = self.client().post('/quizzes')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], MESSAGE_UNPROCESSABLE)
 
 
 # Make the tests conveniently executable
