@@ -52,6 +52,32 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['total_categories'])
 
     """
+      Endpoint: GET /questions/<int:category_id>/questions
+    """
+
+    def test_get_questions_in_category_success(self):
+        category_id = 1
+        response = self.client().get('/categories/{}/questions'.format(category_id))
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['current_category'], category_id)
+
+    def test_get_questions_in_category_success_no_results(self):
+        category_id = 999
+        response = self.client().get('/categories/{}/questions'.format(category_id))
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['questions']), 0)
+        self.assertEqual(data['total_questions'], 0)
+        self.assertEqual(data['current_category'], category_id)
+
+    """
       Endpoint: GET /questions
     """
 
