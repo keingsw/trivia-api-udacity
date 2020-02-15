@@ -94,6 +94,7 @@ class TriviaTestCase(unittest.TestCase):
       Endpoint: POST /questions
     """
 
+    # Create New Question
     def test_create_question_success(self):
         response = self.client().post('/questions', json=self.new_question.copy())
         data = json.loads(response.data)
@@ -176,6 +177,31 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], MESSAGE_UNPROCESSABLE)
+
+    # Search Questions
+    def test_search_questions_success(self):
+        response = self.client().post(
+            '/questions', json={"searchTerm": 'title'})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertIsNone(data['current_category'])
+
+    def test_search_questions_success_no_results(self):
+        response = self.client().post(
+            '/questions', json={"searchTerm": 'QQQQQQQQ'})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['questions']), 0)
+        self.assertEqual(data['total_questions'], 0)
+        self.assertIsNone(data['current_category'])
+
+    # @QUESTION Is there any case to be tested when search_questions throws error?
 
     """
       Endpoint: DELETE /questions/<int:question_id>

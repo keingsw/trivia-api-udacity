@@ -69,6 +69,9 @@ def create_app(test_config=None):
     def create_question():
         body = request.get_json()
 
+        if 'searchTerm' in body.keys():
+            return search_questions(request, body['searchTerm'])
+
         for key in ['question', 'answer', 'difficulty', 'category']:
             if key not in body.keys() or body[key] == None or body[key] == '':
                 return abort(422)
@@ -86,16 +89,29 @@ def create_app(test_config=None):
             "created": question.format()
         })
 
-    '''
-  @TODO: 
-  Create a POST endpoint to get questions based on a search term. 
-  It should return any questions for whom the search term 
-  is a substring of the question. 
+    def search_questions(request, search_term):
+        questions = Question.query.filter(
+            Question.question.ilike('%'+search_term+'%')
+        ).all()
+        paginated_questions = get_paginated_questions(request, questions)
 
-  TEST: Search by any phrase. The questions list will update to include 
-  only question that include that string within their question. 
-  Try using the word "title" to start. 
-  '''
+        return jsonify({
+            "success": True,
+            "questions": paginated_questions,
+            "total_questions": len(questions),
+            "current_category": None
+        })
+
+    '''
+      @TODO:
+      Create a POST endpoint to get questions based on a search term.
+      It should return any questions for whom the search term
+      is a substring of the question.
+
+      TEST: Search by any phrase. The questions list will update to include
+      only question that include that string within their question.
+      Try using the word "title" to start.
+      '''
 
     '''
   @TODO: 
