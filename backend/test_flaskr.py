@@ -261,9 +261,9 @@ class TriviaTestCase(unittest.TestCase):
     """
 
     def test_get_guesses_success(self):
-        category = 1
+        category = Category.query.first()
         response = self.client().post(
-            '/quizzes', json={"quiz_category": category})
+            '/quizzes', json={"quiz_category": category.format()})
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
@@ -271,32 +271,33 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['question'])
 
     def test_get_guesses_success_with_previous_questions(self):
-        category = 1
+        category = Category.query.first()
         questions_in_category = Question.query.filter(
-            Question.category == category).all()
+            Question.category == category.id).all()
 
         expected_question = questions_in_category[0]
         previous_questions = [
             question.id for question in questions_in_category[1:]]
 
         response = self.client().post(
-            '/quizzes', json={"quiz_category": category, "previous_questions": previous_questions})
+            '/quizzes', json={"quiz_category": category.format(), "previous_questions": previous_questions})
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
         self.assertEqual(data['question']['id'], expected_question.id)
 
     def test_get_guesses_success_no_more_question(self):
-        category = 1
+        category = Category.query.first()
         questions_in_category = Question.query.filter(
-            Question.category == category).all()
+            Question.category == category.id).all()
 
         previous_questions = [
             question.id for question in questions_in_category]
 
         response = self.client().post(
-            '/quizzes', json={"quiz_category": category, "previous_questions": previous_questions})
+            '/quizzes', json={"quiz_category": category.format(), "previous_questions": previous_questions})
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
